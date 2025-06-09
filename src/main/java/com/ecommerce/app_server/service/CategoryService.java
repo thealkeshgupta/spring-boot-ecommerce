@@ -1,7 +1,6 @@
 package com.ecommerce.app_server.service;
 
 import com.ecommerce.app_server.model.Category;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
