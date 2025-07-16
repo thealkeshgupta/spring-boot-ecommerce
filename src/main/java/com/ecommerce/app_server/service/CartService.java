@@ -1,6 +1,7 @@
 package com.ecommerce.app_server.service;
 
 import com.ecommerce.app_server.payload.CartDTO;
+import com.ecommerce.app_server.payload.CartItemDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,4 +18,6 @@ public interface CartService {
     String deleteProductFromCart(Long cartId, Long productId);
 
     void updateProductInCarts(Long cartId, Long productId);
+
+    String createOrUpdateCartWithItems(List<CartItemDTO> cartItems);
 }
