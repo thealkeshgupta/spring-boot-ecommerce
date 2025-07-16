@@ -79,11 +79,11 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles);
+//        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles);
 
 //        NOTE: In case of Authorization Header being used for auth,
 //        use the below constructor (What's the difference? -> jwtToken is also being sent in this constructor)
-//        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles, jwtToken);
+        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles, jwtCookie.toString());
 
 //        NOTE: In case of Authorization Header being used for auth,
 //        return the below response
