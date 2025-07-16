@@ -2,6 +2,7 @@ package com.ecommerce.app_server.controller;
 
 import com.ecommerce.app_server.model.Cart;
 import com.ecommerce.app_server.payload.CartDTO;
+import com.ecommerce.app_server.payload.CartItemDTO;
 import com.ecommerce.app_server.repository.CartRepository;
 import com.ecommerce.app_server.service.CartService;
 import com.ecommerce.app_server.util.AuthUtil;
@@ -24,6 +25,12 @@ public class CartController {
 
     @Autowired
     CartRepository cartRepository;
+
+    @PostMapping("/cart/create")
+    public ResponseEntity<String> createOrUpdateCart(@RequestBody List<CartItemDTO> cartItems) {
+        String response = cartService.createOrUpdateCartWithItems(cartItems);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
     @PostMapping("/carts/products/{productId}/quantity/{quantity}")
     public ResponseEntity<CartDTO> addProductToCart(@PathVariable Long productId, @PathVariable Integer quantity) {
