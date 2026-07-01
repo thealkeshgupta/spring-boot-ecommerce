@@ -17,4 +17,4 @@ COPY --from=build /app/target/app-server-0.0.1-SNAPSHOT.jar .
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/app-server-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-Djava.net.preferIPv4Stack=true", "-jar", "/app/app-server-0.0.1-SNAPSHOT.jar"]
