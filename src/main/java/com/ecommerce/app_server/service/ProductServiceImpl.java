@@ -38,7 +38,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private CartRepository cartRepository;
 
-
     @Autowired
     private CartService cartService;
 
@@ -46,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private FileService fileService;
+    private FileStorageService fileStorageService;
 
     @Value("${project.image}")
     private String path;
@@ -78,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
                     - (product.getDiscount() * 0.01) * product.getPrice();
 
             product.setSpecialPrice(specialPrice);
-            product.setImage("default.png");
+            product.setImage("https://wdoxdxvsyrbhsxoxqzed.supabase.co/storage/v1/object/public/product-images/default.png");
 
             Product savedProduct = productRepository.save(product);
             return modelMapper.map(savedProduct, ProductDTO.class);
@@ -112,11 +111,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductDTO> productDTOs = productPage.stream()
-                .map(product -> {
-                    ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
-                    productDTO.setImage(constructImageUrl(product.getImage()));
-                    return productDTO;
-                })
+                .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
 
         ProductResponse productResponse = new ProductResponse();
@@ -127,10 +122,6 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setTotalPages(productPage.getTotalPages());
         productResponse.setLastPage(productPage.isLast());
         return productResponse;
-    }
-
-    private String constructImageUrl(String imageName) {
-        return imageBaseUrl.endsWith("/") ? imageBaseUrl + imageName : imageBaseUrl + "/" + imageName;
     }
 
     @Override
@@ -232,6 +223,8 @@ public class ProductServiceImpl implements ProductService {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
+        fileStorageService.deleteImageFromSupabase(existingProduct.getImage());
+
         List<Cart> carts = cartRepository.findCartsByProductId(productId);
         carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(), productId));
 
@@ -244,11 +237,11 @@ public class ProductServiceImpl implements ProductService {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        String fileName = fileService.uploadImage(path, image);
+        String supabaseImageUrl = fileStorageService.uploadImage(image);
 
-        existingProduct.setImage(fileName);
+        existingProduct.setImage(supabaseImageUrl);
+
         Product updatedProduct = productRepository.save(existingProduct);
-
         return modelMapper.map(updatedProduct, ProductDTO.class);
     }
 
