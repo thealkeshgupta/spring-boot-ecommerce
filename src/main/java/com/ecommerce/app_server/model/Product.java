@@ -46,3 +46,8 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private List<CartItem> products = new ArrayList<>();
 }
+
+
+
+
+// forcing render to rebuild
